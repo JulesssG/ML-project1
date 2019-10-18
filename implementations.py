@@ -3,6 +3,9 @@
 import numpy as np
 
 
+"""
+LINEAR REGRESSION
+"""
 def compute_loss_mse(y, tx, w):
     """
     Compute the mean square error of the estimations compared to true values
@@ -145,8 +148,9 @@ def least_squares(y, tx):
 
     return w, mse
 
-
-# Logistic
+"""
+LOGISTIC REGRESSION
+"""
 def sigmoid(t):
     """
     Apply sigmoid fuction
