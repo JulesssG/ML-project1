@@ -6,12 +6,22 @@ import numpy as np
 FEATURE EXPANSION
 """
 def build_poly(x, degree):
-    """polynomial basis functions for input data x, for j=0 up to j=degree."""
+    """
+    Compute polynomial feature expansion of unbiased matrix x
+
+    Parameters:
+    x: The data without bias
+    degree: The maximum degree of polynomial feature expansion
+
+    Returns:
+    The data with bias + polynomial feature expansion
+    """
     N = x.shape[0]
     matrix = np.ones((N, 1))
-    for i in range(1, degree+1):
-        for feat in x.T:
-            matrix = np.hstack((matrix, feat.reshape((N, 1))**i))
+
+    for i in range(1, degree + 1):
+        for feature in x.T:
+            matrix = np.hstack((matrix, feature.reshape((N, 1)) ** i))
     
     return matrix
 
