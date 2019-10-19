@@ -2,6 +2,28 @@
 
 import numpy as np
 
+"""
+FEATURE EXPANSION
+"""
+def build_poly(x, degree):
+    """
+    Compute polynomial feature expansion of unbiased matrix x
+
+    Parameters:
+    x: The data without bias
+    degree: The maximum degree of polynomial feature expansion
+
+    Returns:
+    The data with bias + polynomial feature expansion
+    """
+    N = x.shape[0]
+    matrix = np.ones((N, 1))
+
+    for i in range(1, degree + 1):
+        for feature in x.T:
+            matrix = np.hstack((matrix, feature.reshape((N, 1)) ** i))
+    
+    return matrix
 
 """
 LINEAR REGRESSION
@@ -19,7 +41,7 @@ def compute_loss_mse(y, tx, w):
     mse: The mean square error
     """
     e = y - tx @ w
-    mse = (e @ e) / (2 * e.shape[0])
+    mse = (e.T @ e) / (2 * e.shape[0])
 
     return mse
 
@@ -42,7 +64,7 @@ def compute_gradient_mse(y, tx, w):
     return gradient
 
 
-def gradient_descent(y, tx, initial_w, max_iters, gamma):
+def gradient_descent(y, tx, initial_w, max_iters, gamma, verbose=False):
     """
     Compute the linear regression using gradient descent
 
@@ -63,6 +85,8 @@ def gradient_descent(y, tx, initial_w, max_iters, gamma):
         gradient = compute_gradient_mse(y, tx, w)
         
         w = w - gamma * gradient
+        if n_iter % 100 == 0:
+            print(compute_loss_mse(y, tx, w))
 
     loss = compute_loss_mse(y, tx, w)
 
