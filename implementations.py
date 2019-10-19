@@ -236,7 +236,7 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma, verbose=False):
             break
 
         loss = new_loss
-        if verbose and iter % 10 == 0:
+        if verbose and iter % 50 == 0:
             print(f'Iteration : {iter} with loss {loss}')
     return w, loss
 
@@ -321,7 +321,7 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma, verbose
 
         loss = new_loss
         
-        if verbose and iter % 10 == 0:
+        if verbose and iter % 50 == 0:
             print(f'Iteration : {iter} with loss {loss}')
     return w, loss
 
