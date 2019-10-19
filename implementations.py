@@ -177,6 +177,8 @@ def compute_loss_logistic(y, tx, w):
     Returns:
     loss: The loss by negative log likelihood
     """
+    print(w)
+    print(tx.shape, w.shape)
     exp = np.exp(tx @ w)
     log = np.log(1 + exp)
     s = np.sum(log)
@@ -225,19 +227,18 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
     loss = compute_loss_logistic(y, tx, w)
 
     # start the logistic regression
-    for iter in range(max_iter):
+    for iter in range(max_iters):
         gradient = compute_gradient_logistic(y, tx, w)
 
         w = w - gamma * gradient
 
         new_loss = compute_loss_logistic(y, tx, w)
-
         if np.abs(loss - new_loss) < threshold:
             loss = new_loss
             break
 
         loss = new_loss
-
+            
     return w, loss
 
 
