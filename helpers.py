@@ -2,42 +2,72 @@
 
 import numpy as np
 
-def standardize(x):
-    mean = np.mean(x, axis=0)
-    std = np.std(x, axis=0)
-    x = (x - mean) / std
-    return x
-
-
-def add_bias(x):
-    return np.hstack((np.ones((x.shape[0], 1)), x))
-
-
-def build_poly(x, degree):
+def standardize(tx):
     """
-    Compute polynomial feature expansion of unbiased matrix x
+    Standardize the data
 
     Parameters:
-    x: The data without bias
+    tx: The data
+
+    Returns:
+    tx: The normalized data
+    """
+    mean = np.mean(tx, axis=0)
+    std = np.std(tx, axis=0)
+    tx = (tx - mean) / std
+
+    return tx
+
+
+def add_bias(tx):
+    """
+    Add bias to the data
+
+    Parameters:
+    tx: The data
+
+    Returns:
+    tx: The bias'd data
+    """
+    return np.hstack((np.ones((tx.shape[0], 1)), tx))
+
+
+def build_poly(tx, degree):
+    """
+    Compute polynomial feature expansion of unbiased matrix tx
+
+    Parameters:
+    tx: The data without bias
     degree: The maximum degree of polynomial feature expansion
 
     Returns:
     The data with bias + polynomial feature expansion
     """
-    N = x.shape[0]
+    N = tx.shape[0]
     matrix = np.ones((N, 1))
 
     for i in range(1, degree + 1):
-        for feature in x.T:
+        for feature in tx.T:
             matrix = np.hstack((matrix, feature.reshape((N, 1)) ** i))
     
     return matrix
 
 
-def compute_accuracy(y, x, w):
-    mapping = np.vectorize((lambda x: -1 if 0 <= x < 0.5 else 1))
+def compute_accuracy(y, tx, w):
+    """
+    Compute the accuracy of the binary classification predictions. Predictions are in [0, 1]
 
-    predictions = mapping(sigmoid(x @ w))
+    Parameters:
+    y: The true values
+    tx: The data
+    w: The weights
+
+    Returns:
+    The accuracy
+    """
+    mapping = np.vectorize((lambda tx: -1 if 0 <= tx < 0.5 else 1))
+
+    predictions = mapping(sigmoid(tx @ w))
 
     return np.sum(y == predictions)/(y.shape[0])
 
