@@ -1,70 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from helpers import *
 import numpy as np
 
-"""
-FEATURE EXPANSION
-"""
-def build_poly(x, degree):
-    """
-    Compute polynomial feature expansion of unbiased matrix x
 
-    Parameters:
-    x: The data without bias
-    degree: The maximum degree of polynomial feature expansion
-
-    Returns:
-    The data with bias + polynomial feature expansion
-    """
-    N = x.shape[0]
-    matrix = np.ones((N, 1))
-
-    for i in range(1, degree + 1):
-        for feature in x.T:
-            matrix = np.hstack((matrix, feature.reshape((N, 1)) ** i))
-    
-    return matrix
-
-"""
-LINEAR REGRESSION
-"""
-def compute_loss_mse(y, tx, w):
-    """
-    Compute the mean square error of the estimations compared to true values
-
-    Parameters:
-    y: The true values
-    tx: The data
-    w: The weights
-
-    Returns:
-    mse: The mean square error
-    """
-    e = y - tx @ w
-    mse = (e.T @ e) / (2 * e.shape[0])
-
-    return mse
-
-
-def compute_gradient_mse(y, tx, w):
-    """
-    Compute the mean square error's gradient
-
-    Parameters:
-    y: The true values
-    tx: The data
-    w: The weights
-
-    Returns:
-    gradient: The computed gradient
-    """
-    e = y - tx @ w
-    gradient = -1/tx.shape[0] * tx.T @ e
-
-    return gradient
-
-
-def gradient_descent(y, tx, initial_w, max_iters, gamma, verbose=False):
+def least_squares_GD(y, tx, initial_w, max_iters, gamma, verbose=False):
     """
     Compute the linear regression using gradient descent
 
@@ -85,15 +25,17 @@ def gradient_descent(y, tx, initial_w, max_iters, gamma, verbose=False):
         gradient = compute_gradient_mse(y, tx, w)
         
         w = w - gamma * gradient
+
         if n_iter % 100 == 0:
-            print(compute_loss_mse(y, tx, w))
+            loss = compute_loss_mse(y, tx, w)
+            print(f'Iteration : {iter} with loss {loss}')
 
     loss = compute_loss_mse(y, tx, w)
 
     return w, loss
 
 
-def stochastic_gradient_descent(y, tx, initial_w, max_iters, gamma):
+def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
     """
     Compute the linear regression using stochastic gradient descent
 
@@ -120,11 +62,35 @@ def stochastic_gradient_descent(y, tx, initial_w, max_iters, gamma):
         gradient = compute_gradient_mse(minibatch_y, minibatch_tx, w)
         loss = compute_loss_mse(minibatch_y, minibatch_tx, w)
 
+        if n_iter % 100 == 0:
+            print(f'Iteration : {iter} with loss {loss}')
+
         w = w - gamma * gradient
 
     loss = compute_loss_mse(y, tx, w)
 
     return w, loss
+
+
+def least_squares(y, tx):
+    """
+    Compute the least squares regression using normal equations
+
+    Parameters:
+    y: The true values
+    tx: The data
+
+    Returns:
+    w: The computed weights
+    mse: The mean square error loss
+    """
+    A = tx.T @ tx
+    b = tx.T @ y
+    
+    w = np.linalg.solve(A, b)
+    mse = compute_mse(y, tx, w)
+
+    return w, mse
 
 
 def ridge_regression(y, tx, lambda_):
@@ -151,82 +117,6 @@ def ridge_regression(y, tx, lambda_):
     return w, mse
 
 
-def least_squares(y, tx):
-    """
-    Compute the least squares regression using normal equations
-
-    Parameters:
-    y: The true values
-    tx: The data
-
-    Returns:
-    w: The computed weights
-    mse: The mean square error loss
-    """
-    A = tx.T @ tx
-    b = tx.T @ y
-    
-    w = np.linalg.solve(A, b)
-    mse = compute_mse(y, tx, w)
-
-    return w, mse
-
-"""
-LOGISTIC REGRESSION
-"""
-def sigmoid(t):
-    """
-    Apply sigmoid fuction
-
-    Parameters:
-    t: The argument we want to apply sigmoid on
-
-    Returns:
-    sigmoid(t)
-    """
-    sigmoid_t = (np.exp(t)) / (1 + np.exp(t))
-
-    return sigmoid_t
-
-
-def compute_loss_logistic(y, tx, w):
-    """
-    Compute the loss by negative log likelihood
-
-    Parameters:
-    y: The true values
-    tx: The data
-    w: The weights
-
-    Returns:
-    loss: The loss by negative log likelihood
-    """
-    exp = np.exp(tx @ w)
-    log = np.log(1 + exp)
-    s = np.sum(log)
-
-    loss = s - y.T @ tx @ w
-
-    return loss
-
-
-def compute_gradient_logistic(y, tx, w):
-    """
-    Compute the gradient of the loss by negative log likelihood
-
-    Parameters:
-    y: The true values
-    tx: The data
-    w: The weights
-
-    Returns:
-    gradient: The gradient of the loss by negative log likelihood
-    """
-    gradient = tx.T @ (sigmoid(tx @ w) - y)
-
-    return gradient
-
-
 def logistic_regression(y, tx, initial_w, max_iters, gamma, verbose=False):
     """
     Compute the logistic regression using gradient descent
@@ -249,64 +139,23 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma, verbose=False):
     loss = compute_loss_logistic(y, tx, w)
 
     # start the logistic regression
-    for iter in range(max_iters):
+    for n_iter in range(max_iters):
         gradient = compute_gradient_logistic(y, tx, w)
 
         w = w - gamma * gradient
 
         new_loss = compute_loss_logistic(y, tx, w)
+
         if np.abs(loss - new_loss) < threshold:
             loss = new_loss
             break
 
         loss = new_loss
-        if verbose and iter % 50 == 0:
-            print(f'Iteration : {iter} with loss {loss}')
+
+        if verbose and n_iter % 100 == 0:
+            print(f'Iteration : {n_iter} with loss {loss}')
+
     return w, loss
-
-
-def compute_reg_loss_logistic(y, tx, w, lambda_):
-    """
-    Compute the regularized loss by negative log likelihood
-
-    Parameters:
-    y: The true values
-    tx: The data
-    w: The weights
-    lambda_: The regularizer parameter
-
-    Returns:
-    loss: The regularized loss by negative log likelihood
-    """
-    exp = np.exp(tx @ w)
-    log = np.log(1 + exp)
-    s = np.sum(log)
-
-    regularizer = lambda_ * np.linalg.norm(w) ** 2
-
-    loss = s - y.T @ tx @ w + regularizer
-
-    return loss
-
-
-def compute_reg_gradient_logistic(y, tx, w, lambda_):
-    """
-    Compute the regularized gradient of the loss by negative log likelihood
-
-    Parameters:
-    y: The true values
-    tx: The data
-    w: The weights
-    lambda_: The regularizer parameter
-
-    Returns:
-    gradient: The regularized gradient of the loss by negative log likelihood
-    """
-    regularizer = 2 * lambda_ * w
-
-    gradient = tx.T @ (sigmoid(tx @ w) -y) + regularizer
-
-    return gradient
 
 
 def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma, verbose=False):
@@ -332,7 +181,7 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma, verbose
     loss = compute_reg_loss_logistic(y, tx, w, lambda_)
 
     # start the logistic regression
-    for iter in range(max_iters):
+    for n_iter in range(max_iters):
         gradient = compute_reg_gradient_logistic(y, tx, w, lambda_)
 
         w = w - gamma * gradient
@@ -345,7 +194,8 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma, verbose
 
         loss = new_loss
         
-        if verbose and iter % 50 == 0:
-            print(f'Iteration : {iter} with loss {loss}')
+        if verbose and n_iter % 100 == 0:
+            print(f'Iteration : {n_iter} with loss {loss}')
+
     return w, loss
 
