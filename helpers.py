@@ -161,6 +161,13 @@ def compute_gradient_logistic(y, tx, w):
     return gradient
 
 
+def compute_gradient_logistic_stoch(y, tx, w):
+    i = np.random.randint(0, tx.shape[0])
+    x_rand = tx[i][:][:,np.newaxis]
+    y_rand = y[i][:][:,np.newaxis]
+    gradient = x_rand @ (sigmoid(x_rand.T @ w) - y_rand)
+    return gradient
+
 def compute_reg_loss_logistic(y, tx, w, lambda_):
     """
     Compute the regularized loss by negative log likelihood

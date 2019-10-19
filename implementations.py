@@ -140,7 +140,7 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma, verbose=False):
 
     # start the logistic regression
     for n_iter in range(max_iters):
-        gradient = compute_gradient_logistic(y, tx, w)
+        gradient = compute_gradient_logistic_stoch(y, tx, w)
 
         w = w - gamma * gradient
 
@@ -153,7 +153,7 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma, verbose=False):
         loss = new_loss
 
         if verbose and n_iter % 100 == 0:
-            print(f'Iteration : {n_iter} with loss {loss}')
+            print(f'Iteration : {n_iter} with loss {loss} and gradient {gradient}')
 
     return w, loss
 
