@@ -194,8 +194,8 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma, verbose
 
         loss = new_loss
         
-        if verbose and n_iter % 100 == 0:
-            print(f'Iteration : {n_iter} with loss {loss}')
+        if verbose and n_iter % 300 == 0:
+            print(f'Iteration : {n_iter} with loss {loss} and gradient: {gradient}')
 
     return w, loss
 

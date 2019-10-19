@@ -112,11 +112,12 @@ def sigmoid(t):
     Apply sigmoid fuction
 
     Parameters:
-    t: The argument we want to apply sigmoid on
+    t: The argument we want to apply sigmoid on, assume an array-like argument
 
     Returns:
     sigmoid(t)
     """
+    t[t>50] = 50
     sigmoid_t = (np.exp(t)) / (1 + np.exp(t))
 
     return sigmoid_t
