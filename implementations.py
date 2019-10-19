@@ -265,7 +265,7 @@ def compute_reg_loss_logistic(y, tx, w, lambda_):
     return loss
 
 
-def compute_reg_gradient_logistic(y, tx, w):
+def compute_reg_gradient_logistic(y, tx, w, lambda_):
     """
     Compute the regularized gradient of the loss by negative log likelihood
 
@@ -305,15 +305,15 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
     threshold = 1e-8
 
     w = initial_w
-    loss = compute_loss_logistic(y, tx, w)
+    loss = compute_reg_loss_logistic(y, tx, w, lambda_)
 
     # start the logistic regression
-    for iter in range(max_iter):
-        gradient = compute_reg_gradient_logistic(y, tx, w)
+    for iter in range(max_iters):
+        gradient = compute_reg_gradient_logistic(y, tx, w, lambda_)
 
         w = w - gamma * gradient
 
-        new_loss = compute_reg_loss_logistic(y, tx, w)
+        new_loss = compute_reg_loss_logistic(y, tx, w, lambda_)
 
         if np.abs(loss - new_loss) < threshold:
             loss = new_loss
