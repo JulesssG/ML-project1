@@ -307,7 +307,7 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
     w = initial_w
     loss = compute_reg_loss_logistic(y, tx, w, lambda_)
 
-    # start the logistic regression
+    # start the regularized logistic regression
     for iter in range(max_iters):
         gradient = compute_reg_gradient_logistic(y, tx, w, lambda_)
 
