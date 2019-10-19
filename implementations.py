@@ -26,7 +26,7 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma, verbose=False):
         
         w = w - gamma * gradient
 
-        if n_iter % 100 == 0:
+        if verbose and n_iter % 100 == 0:
             loss = compute_loss_mse(y, tx, w)
             print(f'Iteration : {iter} with loss {loss}')
 
@@ -35,7 +35,7 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma, verbose=False):
     return w, loss
 
 
-def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
+def least_squares_SGD(y, tx, initial_w, max_iters, gamma, verbose=False):
     """
     Compute the linear regression using stochastic gradient descent
 
@@ -62,7 +62,7 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma):
         gradient = compute_gradient_mse(minibatch_y, minibatch_tx, w)
         loss = compute_loss_mse(minibatch_y, minibatch_tx, w)
 
-        if n_iter % 100 == 0:
+        if verbose and n_iter % 100 == 0:
             print(f'Iteration : {iter} with loss {loss}')
 
         w = w - gamma * gradient
