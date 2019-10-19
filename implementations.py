@@ -177,8 +177,6 @@ def compute_loss_logistic(y, tx, w):
     Returns:
     loss: The loss by negative log likelihood
     """
-    print(w)
-    print(tx.shape, w.shape)
     exp = np.exp(tx @ w)
     log = np.log(1 + exp)
     s = np.sum(log)
@@ -200,12 +198,12 @@ def compute_gradient_logistic(y, tx, w):
     Returns:
     gradient: The gradient of the loss by negative log likelihood
     """
-    gradient = tx.T @ (sigmoid(tx @ w) -y)
+    gradient = tx.T @ (sigmoid(tx @ w) - y)
 
     return gradient
 
 
-def logistic_regression(y, tx, initial_w, max_iters, gamma):
+def logistic_regression(y, tx, initial_w, max_iters, gamma, verbose=False):
     """
     Compute the logistic regression using gradient descent
 
@@ -238,7 +236,8 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
             break
 
         loss = new_loss
-            
+        if verbose and iter % 10 == 0:
+            print(f'Iteration : {iter} with loss {loss}')
     return w, loss
 
 
@@ -286,7 +285,7 @@ def compute_reg_gradient_logistic(y, tx, w, lambda_):
     return gradient
 
 
-def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
+def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma, verbose=False):
     """
     Compute the regularized logistic regression using gradient descent
 
@@ -308,7 +307,7 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
     w = initial_w
     loss = compute_reg_loss_logistic(y, tx, w, lambda_)
 
-    # start the regularized logistic regression
+    # start the logistic regression
     for iter in range(max_iters):
         gradient = compute_reg_gradient_logistic(y, tx, w, lambda_)
 
@@ -321,6 +320,8 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
             break
 
         loss = new_loss
-
+        
+        if verbose and iter % 10 == 0:
+            print(f'Iteration : {iter} with loss {loss}')
     return w, loss
 
