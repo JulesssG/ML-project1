@@ -23,12 +23,12 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma, verbose=False):
 
     for n_iter in range(max_iters):
         gradient = compute_gradient_mse(y, tx, w)
+        loss = compute_loss_mse(y, tx, w)
+
+        if verbose:
+            print_info(gradient, loss, n_iter)
         
         w = w - gamma * gradient
-
-        if verbose and n_iter % 100 == 0:
-            loss = compute_loss_mse(y, tx, w)
-            print(f'Iteration : {iter} with loss {loss}')
 
     loss = compute_loss_mse(y, tx, w)
 
@@ -62,8 +62,8 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma, verbose=False):
         gradient = compute_gradient_mse(minibatch_y, minibatch_tx, w)
         loss = compute_loss_mse(minibatch_y, minibatch_tx, w)
 
-        if verbose and n_iter % 100 == 0:
-            print(f'Iteration : {iter} with loss {loss}')
+        if verbose:
+            print_info(gradient, loss, n_iter)
 
         w = w - gamma * gradient
 
@@ -152,8 +152,8 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma, verbose=False):
 
         loss = new_loss
 
-        if verbose and n_iter % 100 == 0:
-            print(f'Iteration : {n_iter} with loss {loss} and gradient {gradient}')
+        if verbose:
+            print_info(gradient, loss, n_iter)
 
     return w, loss
 
@@ -194,8 +194,11 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma, verbose
 
         loss = new_loss
         
-        if verbose and n_iter % 300 == 0:
-            print(f'Iteration : {n_iter} with loss {loss} and gradient: {gradient}')
+        if verbose:
+            print_info(gradient, loss, n_iter)
 
     return w, loss
 
+def print_it(gradient, loss, n_iter):
+    if n_iter % 500 == 0:
+        print(f'Iteration : {n_iter} with loss {loss} and gradient: {gradient}')
