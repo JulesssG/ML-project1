@@ -52,6 +52,71 @@ def build_poly(tx, degree):
     
     return matrix
 
+def build_poly_cross_2(tx):
+    """
+    Compute polynomial feature expansion with the products across features
+    up to degree 2 of unbiased matrix tx
+
+    Parameters:
+    tx: The data without bias
+
+    Returns:
+    The data with bias + polynomial feature expansion
+    """
+    N, F = tx.shape
+    matrix = np.ones((N, 1))
+
+    # Adding feature with degree 1
+    matrix = np.hstack((matrix, tx))
+    
+    # Adding feature with degree 2
+    cross_ind = []
+    for i in range(F):
+        for j in range(F):
+            if j >= i:
+                cross_ind.append([i, j])
+    for i, j in cross_ind:
+        matrix = np.hstack((matrix, (tx[:, i]*tx[:, j]).reshape(N, 1)))
+        
+    return matrix
+
+def build_poly_cross_3(tx):
+    """
+    Compute polynomial feature expansion with the products across features
+    up to degree 3 of unbiased matrix tx
+
+    Parameters:
+    tx: The data without bias
+
+    Returns:
+    The data with bias + polynomial feature expansion
+    """
+    N, F = tx.shape
+    matrix = np.ones((N, 1))
+
+    # Adding feature with degree 1
+    matrix = np.hstack((matrix, tx))
+    
+    # Adding feature with degree 2
+    cross_ind = []
+    for i in range(F):
+        for j in range(F):
+            if j >= i:
+                cross_ind.append([i, j])
+    for i, j in cross_ind:
+        matrix = np.hstack((matrix, (tx[:, i]*tx[:, j]).reshape(N, 1)))
+        
+    # Adding feature with degree 3
+    cross_ind = []
+    for i in range(F):
+        for j in range(F):
+            for k in range(F):
+                if j >= i and k >= j:
+                    cross_ind.append([i, j, k])
+    for i, j, k in cross_ind:
+        matrix = np.hstack((matrix, (tx[:, i]*tx[:, j]*tx[:, k]).reshape(N, 1)))
+        
+    return matrix
 
 def compute_accuracy(y, tx, w):
     """
@@ -135,10 +200,9 @@ def compute_loss_logistic(y, tx, w):
     Returns:
     loss: The loss by negative log likelihood
     """
-    exp = np.exp(tx @ w)
-    log = np.log(1 + exp)
-    s = np.sum(log)
-
+    txw = tx @ w
+    txw[txw>50] = 50
+    s = np.sum(np.log(1 + np.exp(txw)))
     loss = s - y.T @ tx @ w
 
     return loss
