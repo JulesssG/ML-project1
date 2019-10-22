@@ -211,3 +211,28 @@ def compute_reg_gradient_logistic(y, tx, w, lambda_):
 
     return gradient
 
+
+def split_data(x, y, ratio, seed=1):
+    """
+    Split the dataset based on the given ratio.
+
+    Parameters:
+    y: The true values
+    x, The data
+    ratio: The percentage the will be given to the training set
+
+    Returns:
+    x_train, x_test, y_train, y_test
+    """
+    np.random.seed(seed)
+    N = x.shape[0]
+    num_train = int(N*ratio)
+    rand_indexes = np.random.choice(np.arange(N), size=N, replace=False)
+
+    x_train = x[rand_indexes[:num_train]]
+    y_train = y[rand_indexes[:num_train]]
+
+    x_test = x[rand_indexes[num_train:]]
+    y_test = y[rand_indexes[num_train:]]
+
+    return x_train, x_test, y_train[:, np.newaxis], y_test[:, np.newaxis]
