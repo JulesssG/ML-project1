@@ -154,7 +154,7 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma, verbose=False):
 
         if verbose:
             print_info(gradient, loss, n_iter)
-
+    print("Gradient have norm of", np.linalg.norm(gradient))
     return w, loss
 
 
