@@ -4,7 +4,7 @@ from helpers import *
 import numpy as np
 
 
-def least_squares_GD(y, tx, initial_w, max_iters, gamma, verbose=False):
+def least_squares_GD(y, tx, initial_w, iters, gamma, verbose=False):
     """
     Compute the linear regression using gradient descent
 
@@ -12,7 +12,7 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma, verbose=False):
     y: The true values
     tx: The data
     initial_w: The initial weights
-    max_iters: Max number of gradient descent iterations
+    iters: The number of iterations
     gamma: Gamma (learning rate)
 
     Returns:
@@ -21,7 +21,7 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma, verbose=False):
     """
     w = initial_w
 
-    for n_iter in range(max_iters):
+    for n_iter in range(iters):
         gradient = compute_gradient_mse(y, tx, w)
         loss = compute_loss_mse(y, tx, w)
 
@@ -35,7 +35,7 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma, verbose=False):
     return w, loss
 
 
-def least_squares_SGD(y, tx, initial_w, max_iters, gamma, verbose=False):
+def least_squares_SGD(y, tx, initial_w, iters, gamma, verbose=False):
     """
     Compute the linear regression using stochastic gradient descent
 
@@ -43,7 +43,7 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma, verbose=False):
     y: The true values
     tx: The data
     initial_w: The initial weights
-    max_iters: Max number of gradient descent iterations
+    iters: The number of iterations
     gamma: Gamma (learning rate)
 
     Returns:
@@ -53,7 +53,7 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma, verbose=False):
     # Define parameters to store w and loss
     w = initial_w
 
-    for n_iter in range(max_iters):
+    for n_iter in range(iters):
         minibatch = np.random.choice(tx.shape[0], 1)
 
         minibatch_tx = tx[minibatch]
@@ -117,7 +117,7 @@ def ridge_regression(y, tx, lambda_):
     return w, mse
 
 
-def logistic_regression(y, tx, initial_w, max_iters, gamma, verbose=False):
+def logistic_regression(y, tx, initial_w, iters, gamma, verbose=False):
     """
     Compute the logistic regression using gradient descent
 
@@ -125,40 +125,31 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma, verbose=False):
     y: The true values
     tx: The data
     initial_w: The initial weights
-    max_iters: The max number of iterations
+    iters: The number of iterations
     gamma: Gamma (learning rate)
 
     Returns:
     w: The final weights
     loss: The final loss by negative log likelihood
     """
-    # init parameters
-    threshold = 1e-8
-
     w = initial_w
     loss = compute_loss_logistic(y, tx, w)
 
     # start the logistic regression
-    for n_iter in range(max_iters):
+    for n_iter in range(iters):
         gradient = compute_gradient_logistic_stoch(y, tx, w)
 
         w = w - gamma * gradient
 
-        new_loss = compute_loss_logistic(y, tx, w)
-
-        if np.abs(loss - new_loss) < threshold:
-            loss = new_loss
-            break
-
-        loss = new_loss
+        loss = compute_loss_logistic(y, tx, w)
 
         if verbose:
             print_info(gradient, loss, n_iter)
-    print("Gradient have norm of", np.linalg.norm(gradient))
+            
     return w, loss
 
 
-def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma, verbose=False):
+def reg_logistic_regression(y, tx, lambda_, initial_w, iters, gamma, verbose=False):
     """
     Compute the regularized logistic regression using gradient descent
 
@@ -167,32 +158,24 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma, verbose
     tx: The data
     lambda_: The regularizer parameter
     initial_w: The initial weights
-    max_iters: The max number of iterations
+    iters: The number of iterations
     gamma: Gamma (learning rate)
 
     Returns:
     w: The final weights
     loss: The final regularized loss by negative log likelihood
     """
-    # init parameters
-    threshold = 1e-8
 
     w = initial_w
     loss = compute_reg_loss_logistic(y, tx, w, lambda_)
 
     # start the logistic regression
-    for n_iter in range(max_iters):
+    for n_iter in range(iters):
         gradient = compute_reg_gradient_logistic(y, tx, w, lambda_)
 
         w = w - gamma * gradient
 
-        new_loss = compute_reg_loss_logistic(y, tx, w, lambda_)
-
-        if np.abs(loss - new_loss) < threshold:
-            loss = new_loss
-            break
-
-        loss = new_loss
+        loss = compute_reg_loss_logistic(y, tx, w, lambda_)
         
         if verbose:
             print_info(gradient, loss, n_iter)
