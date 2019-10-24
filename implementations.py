@@ -183,5 +183,34 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, iters, gamma, verbose=Fal
     return w, loss
 
 def print_info(gradient, loss, n_iter):
-    if n_iter % 500 == 0:
-        print(f'Iteration : {n_iter} with loss {loss} and gradient: {gradient}')
+    if n_iter % 250 == 0:
+        norm_gradient = np.sqrt(np.sum(gradient**2))
+        extract_loss = los..reshape(-1)[0]
+        print(f'Iteration : {n_iter} with loss {extract_loss} and gradient norm: {norm_gradient}')
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        

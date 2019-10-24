@@ -118,6 +118,14 @@ def build_poly_cross_3(tx):
         
     return matrix
 
+def add_sqrt(tx):
+    """
+    Assume that the bias column is already there.
+    Will expand the features with the square root
+    """
+    for feature in tx.T:   
+        x = np.hstack((x, np.sqrt(feature.reshape((N, 1)))))
+
 def compute_accuracy(y, tx, w):
     """
     Compute the accuracy of the binary classification predictions. Predictions are in [0, 1]
@@ -299,4 +307,4 @@ def split_data(x, y, ratio, seed=1):
     x_test = x[rand_indexes[num_train:]]
     y_test = y[rand_indexes[num_train:]]
 
-    return x_train, x_test, y_train[:, np.newaxis], y_test[:, np.newaxis]
+    return x_train, x_test, y_train, y_test
