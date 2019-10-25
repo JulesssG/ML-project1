@@ -137,14 +137,14 @@ def logistic_regression(y, tx, initial_w, iters, gamma, verbose=False):
 
     # start the logistic regression
     for n_iter in range(iters):
-        gradient = compute_gradient_logistic_stoch(y, tx, w)
+        gradient = compute_gradient_logistic(y, tx, w)
 
         w = w - gamma * gradient
 
         loss = compute_loss_logistic(y, tx, w)
 
         if verbose:
-            print_info(gradient, loss, n_iter)
+            print_info(gradient, loss, n_iter, tx.shape[0])
             
     return w, loss
 
@@ -182,10 +182,11 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, iters, gamma, verbose=Fal
 
     return w, loss
 
-def print_info(gradient, loss, n_iter):
+def print_info(gradient, loss, n_iter, N):
     if n_iter % 250 == 0:
-        norm_gradient = np.sqrt(np.sum(gradient**2))
-        extract_loss = los..reshape(-1)[0]
+        gradient = gradient.reshape(-1)
+        norm_gradient = np.sqrt(np.sum(gradient**2)) / N
+        extract_loss = loss.reshape(-1)[0]
         print(f'Iteration : {n_iter} with loss {extract_loss} and gradient norm: {norm_gradient}')
         
         

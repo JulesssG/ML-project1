@@ -216,7 +216,7 @@ def compute_loss_logistic(y, tx, w):
     return loss
 
 
-def compute_gradient_logistic(y, tx, w):
+def compute_gradient_logistic(y, tx, w, ):
     """
     Compute the gradient of the loss by negative log likelihood
 
@@ -283,6 +283,22 @@ def compute_reg_gradient_logistic(y, tx, w, lambda_):
 
     return gradient
 
+def sanitize(x):
+    sanitized_x = x.copy()
+    for i, feature in enumerate(sanitized_x.T):
+        na_values = feature == -999
+        known_values = ~na_values
+
+        mean = np.mean(feature[known_values])
+        std = np.std(feature[known_values])
+
+        sanitized_x[:, i] = sanitized_x[:, i] - mean
+        sanitized_x[:, i] = sanitized_x[:, i] / std
+    
+    
+    sanitized_x[na_values_x] = 0
+    
+    return sanitized_x
 
 def split_data(x, y, ratio, seed=1):
     """
