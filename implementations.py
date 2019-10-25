@@ -26,7 +26,7 @@ def least_squares_GD(y, tx, initial_w, iters, gamma, verbose=False):
         loss = compute_loss_mse(y, tx, w)
 
         if verbose:
-            print_info(gradient, loss, n_iter)
+            print_info(gradient, loss, n_iter, 1)
         
         w = w - gamma * gradient
 
@@ -165,7 +165,6 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, iters, gamma, verbose=Fal
     w: The final weights
     loss: The final regularized loss by negative log likelihood
     """
-
     w = initial_w
     loss = compute_reg_loss_logistic(y, tx, w, lambda_)
 

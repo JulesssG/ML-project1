@@ -285,6 +285,9 @@ def compute_reg_gradient_logistic(y, tx, w, lambda_):
 
 def sanitize(x):
     sanitized_x = x.copy()
+    
+    na_values_x = sanitized_x == -999
+    
     for i, feature in enumerate(sanitized_x.T):
         na_values = feature == -999
         known_values = ~na_values
