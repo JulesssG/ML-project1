@@ -290,19 +290,20 @@ def compute_reg_gradient_logistic(y, tx, w, lambda_):
 
 def sanitize(x):
     sanitized_x = x.copy()
-    
     na_values_x = sanitized_x == -999
     
     for i, feature in enumerate(sanitized_x.T):
-        na_values = feature == -999
-        known_values = ~na_values
+        if i != 22:
+            na_values = feature == -999
+            known_values = ~na_values
 
-        mean = np.mean(feature[known_values])
-        std = np.std(feature[known_values])
+            mean = np.mean(feature[known_values])
+            std = np.std(feature[known_values])
 
-        sanitized_x[:, i] = sanitized_x[:, i] - mean
-        sanitized_x[:, i] = sanitized_x[:, i] / std
-    
+            if len(feature[known_values] > 0):
+                sanitized_x[:, i] = sanitized_x[:, i] - mean
+                if std != 0:
+                    sanitized_x[:, i] = sanitized_x[:, i] / std
     
     sanitized_x[na_values_x] = 0
     
