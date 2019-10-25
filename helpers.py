@@ -123,8 +123,12 @@ def add_sqrt(tx):
     Assume that the bias column is already there.
     Will expand the features with the square root
     """
-    for feature in tx.T:   
-        x = np.hstack((x, np.sqrt(feature.reshape((N, 1)))))
+    x_copy = tx.copy()
+    for feature in tx.T:
+        x_copy = np.hstack((x_copy, (np.sqrt(np.abs(feature)) * np.sign(feature)).reshape(feature.shape[0], 1)))
+        x_copy = np.hstack((x_copy, np.cos(feature).reshape((feature.shape[0], 1))))
+        x_copy = np.hstack((x_copy, np.sin(feature).reshape((feature.shape[0], 1))))
+    return x_copy
 
 def compute_accuracy(y, tx, w):
     """
