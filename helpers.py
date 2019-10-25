@@ -144,6 +144,11 @@ def compute_accuracy(y, tx, w):
 
     return np.sum(y == predictions)/(y.shape[0])
 
+def compute_accuracy_linear_reg(y_true, y_pred):
+    y_pred[y_pred >= 0] = 1
+    y_pred[y_pred < 0] = -1
+    return np.sum(y_true == y_pred)/(y_true.shape[0])
+
 def compute_loss_mse(y, tx, w):
     """
     Compute the mean square error of the estimations compared to true values
