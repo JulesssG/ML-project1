@@ -13,7 +13,7 @@ sanitized_x = sanitize(x_train)
 sanitized_x = add_bias(sanitized_x)
 y = y_train.reshape((y_train.shape[0], 1))
 
-# Feature 23 splits the data in different categories and we will treat them differently
+# Feature 23 (23 because we added bias) splits the data in different categories and we will treat them differently
 feature_23 = sanitized_x[:, 23]
 x_minus_23 = sanitized_x[:, np.array(range(sanitized_x.shape[1])) != 23]
 
