@@ -153,7 +153,7 @@ def sigmoid(t):
     Returns:
     sigmoid(t)
     """
-    #When t is greater than 50 the value is basically one, so it avoids overflow warning and underfinded behaviours
+    # When t is greater than 50 the value is basically one, so it avoids overflow warning and undefinded behaviours
     t[t>50] = 50
     sigmoid_t = (np.exp(t)) / (1 + np.exp(t))
 
@@ -173,7 +173,7 @@ def compute_loss_logistic(y, tx, w):
     loss: The loss by negative log likelihood
     """
     txw = tx @ w
-    #Here as well it is some prevention to avoid overflow and undifined behaviours
+    # Here as well it is some prevention to avoid overflow and undifined behaviours
     txw[txw>50] = 50
     s = np.sum(np.log(1 + np.exp(txw)))
     loss = s - y.T @ tx @ w
