@@ -37,7 +37,7 @@ weights = []
 for i, x_chunk in enumerate(extended_x_sep):
     # Ridge regression
     w_init = np.random.rand(x_chunk.shape[1], 1)
-    w, loss = ridge_regression(y_sep[i], x_chunk, 0.0001)
+    w, loss = ridge_regression(y_sep[i], x_chunk, 3.5938136638046254e-07)
 
     weights.append(w)
 

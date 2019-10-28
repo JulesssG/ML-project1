@@ -136,6 +136,7 @@ def feature_expansion(tx):
         x_copy = np.hstack((x_copy, (np.sqrt(np.abs(feature)) * np.sign(feature)).reshape(feature.shape[0], 1)))
         x_copy = np.hstack((x_copy, np.cos(feature).reshape((feature.shape[0], 1))))
         x_copy = np.hstack((x_copy, np.sin(feature).reshape((feature.shape[0], 1))))
+        x_copy = np.hstack((x_copy, feature.reshape((x_copy.shape[0], 1)) ** 4))
     return x_copy
 
 
