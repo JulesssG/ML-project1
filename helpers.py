@@ -121,13 +121,18 @@ def build_poly_cross_3(tx):
     return matrix
 
 
-def add_sqrt(tx):
+def feature_expansion(tx):
     """
-    Assume that the bias column is already there.
-    Will expand the features with the square root
+    Expand the data by adding, sqrt, cos and sin. Assumes that the data is biased.
+
+    Parameters:
+    tx: The data
+
+    Returns:
+    Expanded data tx
     """
     x_copy = tx.copy()
-    for feature in tx.T:
+    for feature in tx.T[1:]:
         x_copy = np.hstack((x_copy, (np.sqrt(np.abs(feature)) * np.sign(feature)).reshape(feature.shape[0], 1)))
         x_copy = np.hstack((x_copy, np.cos(feature).reshape((feature.shape[0], 1))))
         x_copy = np.hstack((x_copy, np.sin(feature).reshape((feature.shape[0], 1))))
@@ -316,8 +321,8 @@ def sanitize(x):
     na_values_x = sanitized_x == -999
     
     for i, feature in enumerate(sanitized_x.T):
-        # The 22nd feature is a special feature we use later on to split the data in categories, so we don't touch it
-        if i != 22:
+        # The 23nd feature is a special feature we use later on to split the data in categories, so we don't touch it
+        if i != 23:
             na_values = feature == -999
             known_values = ~na_values
 
