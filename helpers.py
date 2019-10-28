@@ -52,6 +52,7 @@ def build_poly(tx, degree):
     
     return matrix
 
+
 def build_poly_cross_2(tx):
     """
     Compute polynomial feature expansion with the products across features
@@ -79,6 +80,7 @@ def build_poly_cross_2(tx):
         matrix = np.hstack((matrix, (tx[:, i]*tx[:, j]).reshape(N, 1)))
         
     return matrix
+
 
 def build_poly_cross_3(tx):
     """
@@ -118,6 +120,7 @@ def build_poly_cross_3(tx):
         
     return matrix
 
+
 def add_sqrt(tx):
     """
     Assume that the bias column is already there.
@@ -130,9 +133,10 @@ def add_sqrt(tx):
         x_copy = np.hstack((x_copy, np.sin(feature).reshape((feature.shape[0], 1))))
     return x_copy
 
+
 def compute_accuracy(y, tx, w):
     """
-    Compute the accuracy of the binary classification predictions. Predictions are in [0, 1]
+    Compute the accuracy of the logistic binary classification predictions. Predictions are in [0, 1]
 
     Parameters:
     y: The true values
@@ -148,10 +152,22 @@ def compute_accuracy(y, tx, w):
 
     return np.sum(y == predictions)/(y.shape[0])
 
+
 def compute_accuracy_linear_reg(y_true, y_pred):
+    """
+    Compute the accuracy of the linear binary classification predictions.
+
+    Parameters:
+    y_true: The true values
+    y_pred: The predictions
+
+    Returns:
+    The accuracy
+    """
     y_pred[y_pred >= 0] = 1
     y_pred[y_pred < 0] = -1
     return np.sum(y_true == y_pred)/(y_true.shape[0])
+
 
 def compute_loss_mse(y, tx, w):
     """
@@ -242,13 +258,6 @@ def compute_gradient_logistic(y, tx, w, ):
     return gradient
 
 
-def compute_gradient_logistic_stoch(y, tx, w):
-    i = np.random.randint(0, tx.shape[0])
-    x_rand = tx[i][:][:,np.newaxis]
-    y_rand = y[i][:][:,np.newaxis]
-    gradient = x_rand @ (sigmoid(x_rand.T @ w) - y_rand)
-    return gradient
-
 def compute_reg_loss_logistic(y, tx, w, lambda_):
     """
     Compute the regularized loss by negative log likelihood
@@ -292,11 +301,22 @@ def compute_reg_gradient_logistic(y, tx, w, lambda_):
 
     return gradient
 
+
 def sanitize(x):
+    """
+    Sanitize the data matrix, i.e. normalize it without taking into account the -999 values and set the -999 values to 0
+
+    Parameters:
+    x: The data
+
+    Returns
+    sanitized_x: The sanitized data
+    """
     sanitized_x = x.copy()
     na_values_x = sanitized_x == -999
     
     for i, feature in enumerate(sanitized_x.T):
+        # The 22nd feature is a special feature we use later on to split the data in categories, so we don't touch it
         if i != 22:
             na_values = feature == -999
             known_values = ~na_values
@@ -310,8 +330,9 @@ def sanitize(x):
                     sanitized_x[:, i] = sanitized_x[:, i] / std
     
     sanitized_x[na_values_x] = 0
-    
+
     return sanitized_x
+
 
 def split_data(x, y, ratio, seed=1):
     """
@@ -337,3 +358,22 @@ def split_data(x, y, ratio, seed=1):
     y_test = y[rand_indexes[num_train:]]
 
     return x_train, x_test, y_train, y_test
+
+
+def print_info(gradient, loss, n_iter):
+    """
+    Print verbose information for regressions
+
+    Parameters:
+    gradient: The gradient
+    loss: The loss
+    n_iter: The iteration the regression is at
+
+    Returns:
+    None
+    """
+    if n_iter % 250 == 0:
+        norm_gradient = np.sqrt(np.sum(gradient**2))
+        extract_loss = loss.reshape(-1)[0]
+        print(f'Iteration : {n_iter} with loss {extract_loss} and gradient norm: {norm_gradient}')
+
