@@ -12,11 +12,12 @@ def plot_train_test(train_errors, test_errors, lambdas, degree):
     
     degree is just used for the title of the plot.
     """
-    plt.semilogx(lambdas, train_errors, color='b', marker='*', label="Train error")
-    plt.semilogx(lambdas, test_errors, color='r', marker='*', label="Test error")
+    plt.semilogx(lambdas, train_errors, color='b', marker='*', label="Train set accuracy")
+    plt.semilogx(lambdas, test_errors, color='r', marker='*', label="Validation set accuracy")
     plt.xlabel("lambda")
-    plt.ylabel("RMSE")
-    plt.title("Ridge regression for polynomial degree " + str(degree))
+    plt.ylabel("Accuracy")
+    plt.title("Accuracy of training and validation set")
     leg = plt.legend(loc=1, shadow=True)
     leg.draw_frame(False)
-    plt.savefig("ridge_regression")
+    plt.figure(figsize=(7,5))
+    plt.savefig("latex-report/validation")
