@@ -31,19 +31,15 @@ for i in np.unique(feature_23):
 # Extend the data
 extended_x_sep = [feature_expansion(e) for e in x_sep]
 
-# The different weights and predictions for different categories
+# The different weights for different categories
 weights = []
-y_preds = []
 
 for i, x_chunk in enumerate(extended_x_sep):
     # Ridge regression
     w_init = np.random.rand(x_chunk.shape[1], 1)
     w, loss = ridge_regression(y_sep[i], x_chunk, 0.0001)
 
-    y_pred = predict_labels(w, x_chunk)
-
     weights.append(w)
-    y_preds.append(y_pred)
 
 # Load the test data
 _, x_test, ids_test = load_csv_data('data/test.csv')
