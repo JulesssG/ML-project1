@@ -322,7 +322,7 @@ def sanitize(x):
     
     for i, feature in enumerate(sanitized_x.T):
         # The 23nd feature is a special feature we use later on to split the data in categories, so we don't touch it
-        if i != 23:
+        if i != 22:
             na_values = feature == -999
             known_values = ~na_values
 
