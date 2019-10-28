@@ -12,6 +12,7 @@ All the processing, feature engineering, feature expansion is explained in the p
 
 ## Conventions
 For vectors of any size N, we always assume that the numpy shape is (N,1)
+`run.py` assumes the data `test.csv` and `train.csv` is in folder `data/`
 
 ## Run code
 You need python 3 and numpy, for example if you have pip:
