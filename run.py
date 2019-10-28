@@ -5,19 +5,20 @@ from implementations import *
 from proj1_helpers import *
 import numpy as np
 
-# Load the data
+# Load the training data
 y_train, x_train, _ = load_csv_data('data/train.csv')
 
-# Sanitize the data and reshape the y vector
+# Sanitize the data (normalize and set -999 values to 0) and reshape the y vector
 sanitized_x = sanitize(x_train)
 sanitized_x = add_bias(sanitized_x)
 y = y_train.reshape((y_train.shape[0], 1))
 
-# Feature 23 (23 because we added bias) splits the data in different categories and we will treat them differently
+# Feature 23 (23 because we added bias, it's feature 22 without bias)
+# It splits the data in different categories and we will treat them differently
 feature_23 = sanitized_x[:, 23]
 x_minus_23 = sanitized_x[:, np.array(range(sanitized_x.shape[1])) != 23]
 
-# The data separated
+# The data separated in categories
 x_sep = []
 y_sep = []
 
@@ -28,7 +29,7 @@ for i in np.unique(feature_23):
     x_sep.append(x_minus_23[feature_23 == i, :])
     y_sep.append(y[feature_23 == i, :])
 
-# Extend the data
+# Extend the data, (sqrt, cosinus, sinus, degree 4)
 extended_x_sep = [feature_expansion(e) for e in x_sep]
 
 # The different weights for different categories
@@ -37,6 +38,7 @@ weights = []
 for i, x_chunk in enumerate(extended_x_sep):
     # Ridge regression
     w_init = np.random.rand(x_chunk.shape[1], 1)
+    # Lambda calculated with validation
     w, loss = ridge_regression(y_sep[i], x_chunk, 3.5938136638046254e-07)
 
     weights.append(w)
@@ -70,7 +72,7 @@ for i, w in enumerate(weights):
 N = x_test.shape[0]
 predictions_t = np.zeros((N,1))
 
-# Rebuild the predictions, in order, since we split them
+# Rebuild the predictions in order, since we split them
 for i, value in enumerate(categories_23_t):
     ind = np.arange(N)[feature_23_t == value]
     predictions_t[ind] = y_sep_t[i]
