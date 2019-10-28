@@ -18,7 +18,7 @@
 \section{Introduction}
 In this project we try to determine if a given event's signature was the result of a Higgs boson (signal) or some other particle (background) thanks to a vector representing the decay signature of an event. The dataset is provided by the EPFL on the website AIcrowd and seperated into two parts: a test and a training set. Therefore, the goal is to choose an appropriate machine learning model, such as logistic regression, least squares or ridge regression and train it on the training set, in order to ultimately get the best results on the test set.
 \section{Feature engineering}
-When we first loaded the raw data and ran a simple model, wether it be linear regression or logistic regression, we got an accuracy of 66\% on training. In fact the data is unbalanced, two thirds of the data points are not Higgs boson and the remaining third are Higgs boson. So it was as good as always saying no. We needed to process the data to improve our results. \\\\
+When we first loaded the raw data and ran a simple model, wether it be linear regression or logistic regression, we got an accuracy of $66\%$ on training. In fact the data is unbalanced, two thirds of the data points are not Higgs boson and the remaining third are Higgs boson. So it was as good as always saying no. We needed to process the data to improve our results. \\\\
 To do that we first used visualization tools, as we can gain a lot of insights on the data using visualization. Thus, we plotted the distribution of each feature. To have a better view of how the values are distributed we displayed them for each prediction, picking the same amout of $-1$ and $1$ predictions. Here is a typical example of which we learned a lot:
 \begin{figure}[h!]
   \centering
@@ -33,7 +33,8 @@ Knowing that, we decided to normalize the data without taking into account the $
   \includegraphics[width=\columnwidth]{graph-features/feature-06-processed.png}
   \caption{The feature 06 after processing, not displaying the $-999$ values}
 	\label{fig:feature-06-processed}
-\end{figure}
+\end{figure}\\
+Another interesting thing we noticed, is that the 22nd feature is discrete. It only has 4 values: ${0,1,2,3}$, we thought that maybe this feature represents some category. Maybe they represent different particles. So we tried to train them differently. By normalizing the data as specified and training these 4 categories differently we managed to get to $78\%$ accuracy on training.
 
 \section{Model choosing}
 
